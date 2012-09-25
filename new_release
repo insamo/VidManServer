@@ -1,0 +1,54 @@
+#!/bin/bash
+
+#Color function
+black='\E[30;40m'
+red='\e[1;31m'
+green='\E[32;40m'
+yellow='\E[33;40m'
+blue='\E[34;40m'
+magenta='\E[35;40m'
+cyan='\E[36;40m'
+white='\E[37;40m'
+
+cecho ()
+{
+local default_msg="No message"
+message=${1:-$default_msg}
+color=${2:-$black}
+  echo -e "$color"
+  echo "$message"
+  tput sgr0
+  return
+}
+clear
+
+cecho '@ScriptName New Release GIT' $red
+cecho '@Version 1.0.0' $red
+cecho '@Author insamo' $red
+cecho '@Email wmsomnium@gmail.com' $red
+echo -e '\n'
+cecho 'Script Testing on ->' $red
+
+cecho '@Linux Version' $red
+cecho 'Linux arman-portable 3.0.0-15-generic ' $red
+cecho 'Fri Jan 20 15:59:53 UTC 2012 i686 i686 i386 GNU/Linux' $red
+echo -e '\n'
+
+cecho '@Distributor ID: Ubuntu' $red
+cecho '@Description:    Ubuntu 11.10' $red
+cecho '@Release:        11.10' $red
+cecho '@Codename:       oneiric' $red
+echo -e '\n'
+
+echo -e "Enter number of release-\c"
+read version
+git checkout -b release-$version develope
+rm -fr ./version
+echo $version > version
+git commit -a -m "Bumped version number to $version"
+git checkout master
+git merge --no-ff release-$version
+git tag -a $version
+git checkout develope
+git merge --no-ff release-$version
+git branch -d release-$version
